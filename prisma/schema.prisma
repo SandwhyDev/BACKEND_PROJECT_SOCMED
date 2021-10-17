@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User{
+  id                    Int         @id @default(autoincrement())
+  email                 String      @unique
+  password              String
+  
+  //relasi
+  avatar                Avatar?
+  biodata               Biodata?
+  post                  Post[]
+  like                  Like[]
+  comment               Comment[]
+  reply                 Reply[]
+  followers             Follows[] @relation("followers")
+  following             Follows[] @relation("following")
+  from                  Follows[] @relation("from_id")
+
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+model Biodata{
+  id                    Int         @id @default(autoincrement())
+  nama_lengkap          String
+  alamat                String
+  telp                  Int         @unique
+  jenis_kelamin         String
+  pendidikan            String
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  //relasi
+  user_id               Int         @unique
+  user                  User        @relation(fields: [user_id], references:[id])
+
+}
+
+
+model Avatar{
+  id                    Int         @id @default(autoincrement())
+  filename              String
+  image_path            String
+
+  //relasi
+  user_id               Int         @unique
+  user                  User        @relation(fields: [user_id], references:[id])
+}
+
+model Post{
+  id                    Int         @id @default(autoincrement())
+  title                 String
+  body                  String
+
+  //relasi
+  user_id               Int
+  user                  User        @relation(fields: [user_id], references:[id])
+
+  post_photo            Post_photo?
+  like                  Like[]
+  comment               Comment[]
+  reply                 Reply[]
+}
+
+model Post_photo{
+  id                    Int         @id @default(autoincrement())
+  filename              String
+  image_path            String
+
+  //relasi
+  post_id               Int         @unique
+  post                  Post        @relation(fields: [post_id], references:[id])
+}
+
+model Like{
+  id                    Int         @id @default(autoincrement())
+
+  post_id               Int         
+  from_id               Int         @unique
+
+  post                  Post        @relation(fields: [post_id], references:[id])
+  from                  User        @relation(fields: [from_id], references:[id])
+}
+
+
+model Comment{
+  id                    Int         @id @default(autoincrement())
+  body                  String
+
+  //relasi
+  post_id               Int
+  from_id               Int
+
+  post                  Post        @relation(fields: [post_id], references:[id])
+  from                  User        @relation(fields: [from_id], references:[id])
+
+  reply                 Reply[]
+}
+
+model Reply{
+  id                    Int         @id @default(autoincrement())
+  body                  String
+
+  //relasi
+  post_id               Int
+  comment_id            Int
+  from_id               Int
+
+  post                  Post        @relation(fields: [post_id], references: [id])
+  comment               Comment     @relation(fields: [comment_id], references:[id])
+  from                  User        @relation(fields: [from_id], references:[id])
+}
+
+model Follows {
+  follow_id   Int
+  from_id     Int  
+
+
+  following   User @relation("following", fields: [from_id], references: [id])
+  followers   User @relation("followers", fields: [follow_id], references: [id])
+  from        User  @relation("from_id", fields: [from_id], references: [id])
+
+  @@id([follow_id, from_id])
+}

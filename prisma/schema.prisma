@@ -24,7 +24,7 @@ model User{
   reply                 Reply[]
   followers             Follows[] @relation("followers")
   following             Follows[] @relation("following")
-  from                  Follows[] @relation("from_id")
+  // from                  Follows[] @relation("from_id")
 
 
   createdAt             DateTime    @default(now())
@@ -123,13 +123,13 @@ model Reply{
 }
 
 model Follows {
-  follow_id   Int
+  follow_id     Int
   from_id     Int  
 
 
   following   User @relation("following", fields: [from_id], references: [id])
   followers   User @relation("followers", fields: [follow_id], references: [id])
-  from        User  @relation("from_id", fields: [from_id], references: [id])
+  // from        User  @relation("from_id", fields: [from_id], references: [id])
 
   @@id([follow_id, from_id])
 }

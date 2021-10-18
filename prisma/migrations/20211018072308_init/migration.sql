@@ -86,8 +86,7 @@ CREATE TABLE "Follows" (
 
     PRIMARY KEY ("follow_id", "from_id"),
     CONSTRAINT "Follows_from_id_fkey" FOREIGN KEY ("from_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Follows_follow_id_fkey" FOREIGN KEY ("follow_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Follows_from_id_fkey" FOREIGN KEY ("from_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Follows_follow_id_fkey" FOREIGN KEY ("follow_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex
